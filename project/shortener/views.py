@@ -8,7 +8,9 @@ from django.template import RequestContext
 def index(request):
   return render(request, "shortener/index.html")
 
-def shorten(request):
+# This creates a new database entry every time you submit the form (if something was entered into the text field in index.html)
+# You might not want to flood the database endlessly in a "real" service
+def shorten(request): 
   context = RequestContext(request)
   if request.method == 'POST':
     long_URL = request.POST['url']
@@ -20,6 +22,8 @@ def shorten(request):
     return HttpResponse(id_str)
   return HttpResponseRedirect("/")
 
+# If a URL is found with the given id in /get/id, the user is 301 redirected to the specified URL
+# Note that HttpResponsePermanentRedirect will not redirect you to a different domain if you don't specify your URL with http:// or https:// etc at the start
 def getURL(request, id):
   try:
     URL_entry = URL.objects.get(pk = id)
