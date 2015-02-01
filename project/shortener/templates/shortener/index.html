@@ -9,15 +9,7 @@
       <input type="text" name="url" id="url"/><br>
       <input type="submit" value="Shorten URL"/>
     </form>
+    (Please note that you must include the protocol http or https to get redirected to a site not in this domain. Example: https://www.google.fi)
     <br>
-    {% if full_URL and short_id %}
-    Given URL: {{full_URL}}
-    <br>
-    Shortened: {{short_id}}
-    <br>
-    (To get redirected to the URL use get/{{short_id}} as the PATH. Example: http://127.0.0.1:8000/get/GENERATED_ID)
-    {% else %}
-    Enter a URL to be shortened to the above field.
-    {% endif %}
 	</body>
 </html>

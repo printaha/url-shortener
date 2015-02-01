@@ -1,5 +1,5 @@
 from django.shortcuts import render, render_to_response
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from shortener.models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext
@@ -10,16 +10,21 @@ def index(request):
 
 def shorten(request):
   context = RequestContext(request)
-  full_URL = request.POST['url']
-  context['full_URL'] = full_URL
-  context['short_id'] = 'jeejee'
-  return render_to_response("shortener/index.html", context)
+  if request.method == 'POST':
+    long_URL = request.POST['url']
+    if long_URL == '':
+      return HttpResponseRedirect("/")
+    u = URL(full_URL=long_URL)
+    u.save()
+    id_str = str(u.pk)
+    return HttpResponse(id_str)
+  return HttpResponseRedirect("/")
 
 def getURL(request, id):
   try:
-    URL_entry = URL.objects.get(short_id = id)
+    URL_entry = URL.objects.get(pk = id)
     full_URL = URL_entry.full_URL
-    return HttpResponseRedirect(full_URL)
-  except ObjectDoesNotExist:
+    return HttpResponsePermanentRedirect(full_URL)
+  except (ValueError, ObjectDoesNotExist):
     raise Http404("Corresponding URL to given ID not found")
   return render(request, "shortener/index.html")
