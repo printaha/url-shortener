@@ -19,7 +19,7 @@ def shorten(request):
     u = URL(full_URL=long_URL)
     u.save()
     id_str = str(u.pk)
-    return HttpResponse(id_str)
+    return HttpResponse(id_str, content_type="text/plain")
   return HttpResponseRedirect("/")
 
 # If a URL is found with the given id in /get/id, the user is 301 redirected to the specified URL
@@ -32,3 +32,4 @@ def getURL(request, id):
   except (ValueError, ObjectDoesNotExist):
     raise Http404("Corresponding URL to given ID not found")
   return render(request, "shortener/index.html")
+  
